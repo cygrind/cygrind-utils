@@ -1,6 +1,3 @@
-use std::fs::File;
-use std::io::Write;
-
 use super::{canvas::Canvas, parser::Pattern};
 use flo_curves::bezier;
 use flo_curves::*;
@@ -17,7 +14,7 @@ fn evaluate_height(height: i32) -> f64 {
     bezier::curve_intersects_line(&col_curve, &line)[0].0 * 255.0
 }
 
-pub fn draw(pattern: Pattern) {
+pub fn draw(pattern: Pattern) -> Vec<u8> {
     let mut canvas = Canvas::new(1920, 1920);
     let heightconst = (canvas.height() / 16) as f32;
     let widthconst = (canvas.width() / 16) as f32;
@@ -44,10 +41,7 @@ pub fn draw(pattern: Pattern) {
         }
     }
 
-    let d = canvas.data();
-    let mut file = File::create("test.png").unwrap();
-    let bytes = d.as_bytes();
-    file.write_all(bytes).unwrap();
+    canvas.data().as_bytes().to_vec()
 }
 
 pub struct ColLine(Coord2, Coord2);
