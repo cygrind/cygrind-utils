@@ -1,6 +1,7 @@
 use std::{fs::File, io::Write};
 
-use crate::cgp::*;
+use crate::draw2d::*;
+use crate::parser;
 
 #[test]
 fn parser() {

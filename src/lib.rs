@@ -1,6 +1,7 @@
-#[allow(dead_code)]
+#![allow(dead_code)]
 
-pub mod cgp;
+pub mod parser;
+pub mod draw2d;
 
 #[cfg(test)]
 mod test;

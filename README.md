@@ -34,3 +34,7 @@ Times:
 - Drawing: `11ms`
 
 - File-ing: `Idk it takes a while IO is really slow (150ms)`
+
+## Example
+
+![Example](example.png)

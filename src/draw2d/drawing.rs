@@ -1,4 +1,5 @@
-use super::{canvas::Canvas, parser::Pattern};
+use super::{canvas::Canvas};
+use crate::parser::Pattern;
 use flo_curves::bezier;
 use flo_curves::*;
 
