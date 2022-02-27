@@ -13,7 +13,7 @@ pub enum Prefabs {
 impl Prefabs {
     pub fn short_name<'a>(&self) -> &'a str {
         match self {
-            Prefabs::None => "",
+            Prefabs::None => "0",
             Prefabs::Melee => "n",
             Prefabs::Projectile => "p",
             Prefabs::JumpPad => "J",
@@ -44,6 +44,42 @@ impl Cell {
 }
 
 pub struct Pattern(pub Vec<Vec<Cell>>);
+
+impl Pattern {
+    pub fn to_pattern_string(&self) -> String {
+        let pattern = &self.0;
+
+        let mut height_buf = Vec::new();
+        let mut prefab_buf = Vec::new();
+
+        for i in 0..16 {
+            for j in 0..16 {
+                let cell = &pattern[i][j];
+
+                let height_str = if cell.height >= 10 {
+                    format!("({})", cell.height)
+                } else {
+                    cell.height.to_string()
+                };
+
+                height_buf.push(height_str);
+                prefab_buf.push(cell.prefab.short_name().to_owned());
+            }
+
+            height_buf.push("\n".to_owned());
+            prefab_buf.push("\n".to_owned());
+        }
+
+        height_buf.push("\n".to_owned());
+
+        [height_buf, prefab_buf]
+            .concat()
+            .into_iter()
+            .collect::<String>()
+            .trim()
+            .to_owned()
+    }
+}
 
 pub fn parse(source: impl AsRef<str>) -> Pattern {
     let source = source.as_ref();
@@ -133,14 +169,22 @@ pub enum Tokens {
 mod test {
     use std::{fs::File, io::Write};
 
-    use crate::parser;
+    use super::*;
+
+    #[test]
+    fn serde() {
+        let src = include_str!("../example.cgp");
+        let out = parse(src).to_pattern_string();
+
+        assert_eq!(src, &*out);
+    }
 
     #[test]
     fn parser_draw2d() {
         use crate::draw2d::draw::Draw2d;
 
         let src = include_str!("../example.cgp");
-        let data = Draw2d::draw(parser::parse(src));
+        let data = Draw2d::draw(parse(src));
 
         let bytes = &*data;
         let mut file = File::create("example.png").unwrap();
