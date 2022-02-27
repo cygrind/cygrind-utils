@@ -10,6 +10,19 @@ pub enum Prefabs {
     HiM,
 }
 
+impl Prefabs {
+    pub fn short_name<'a>(&self) -> &'a str {
+        match self {
+            Prefabs::None => "",
+            Prefabs::Melee => "n",
+            Prefabs::Projectile => "p",
+            Prefabs::JumpPad => "J",
+            Prefabs::Stairs => "s",
+            Prefabs::HiM => "H",
+        }
+    }
+}
+
 #[derive(Debug)]
 pub struct Cell {
     height: i32,
@@ -24,11 +37,16 @@ impl Cell {
     pub fn prefab(&self) -> Prefabs {
         self.prefab
     }
+
+    pub fn is_none(&self) -> bool {
+        self.prefab == Prefabs::None
+    }
 }
 
 pub struct Pattern(pub Vec<Vec<Cell>>);
 
-pub fn parse(source: String) -> Pattern {
+pub fn parse(source: impl AsRef<str>) -> Pattern {
+    let source = source.as_ref();
     let lines = source.lines();
     let mut token_grid = Vec::new();
     let mut pattern = Pattern(Vec::new());
@@ -68,8 +86,7 @@ pub fn parse(source: String) -> Pattern {
                 }
             };
 
-            buff.push(Cell {height, prefab});
-
+            buff.push(Cell { height, prefab });
         }
         pattern.0.push(buff)
     }
@@ -111,3 +128,31 @@ pub enum Tokens {
     #[error]
     Error,
 }
+
+#[cfg(test)]
+mod test {
+    use std::{fs::File, io::Write};
+
+    use crate::parser;
+
+    #[test]
+    fn parser_draw2d() {
+        use crate::draw2d::draw::Draw2d;
+
+        let src = include_str!("../example.cgp");
+        let data = Draw2d::draw(parser::parse(src));
+
+        let bytes = &*data;
+        let mut file = File::create("example.png").unwrap();
+        file.write_all(bytes).unwrap();
+    }
+
+    #[test]
+    fn parser_draw3d() {
+        // use crate::draw3d::draw::Draw3d;
+
+        // let src = include_str!("../example.cgp");
+        // let data = Draw3d::draw(parser::parse(src));
+    }
+}
+// cargo test --package cygrind-utils --lib -- parser::test::parser_draw2d --exact --nocapture

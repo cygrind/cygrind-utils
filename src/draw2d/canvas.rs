@@ -1,4 +1,6 @@
-use skia_safe::{Color, Data, EncodedImageFormat, Paint, PaintStyle, Path, Surface};
+use skia_safe::{
+    Color, Data, EncodedImageFormat, Font, Paint, PaintStyle, Path, Surface, TextBlob, Typeface,
+};
 use std::mem;
 
 pub struct Canvas {
@@ -114,6 +116,18 @@ impl Canvas {
     #[inline]
     pub fn colour(&mut self, col: f64) {
         let col = col as u8;
-        self.paint.set_color(u32::from_le_bytes([col, col, col, 255]));
+        self.paint
+            .set_color(u32::from_le_bytes([col, col, col, 255]));
+    }
+
+    #[inline]
+    pub fn fill_text<'a>(&mut self, text: &str, pos: (f32, f32)) {
+        let paint = self.paint.clone();
+        let blob = TextBlob::new(
+            text,
+            &Font::from_typeface_with_params(Typeface::default(), 64.0, 1.5, 0.0),
+        )
+        .unwrap();
+        self.canvas().draw_text_blob(blob, pos, &paint);
     }
 }

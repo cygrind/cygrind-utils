@@ -1,7 +1,10 @@
 #![allow(dead_code)]
 
-pub mod parser;
+#[cfg(feature = "draw2d")]
 pub mod draw2d;
 
-#[cfg(test)]
-mod test;
+#[cfg(feature = "draw3d")]
+pub mod draw3d;
+
+pub mod parser;
+pub mod util;
