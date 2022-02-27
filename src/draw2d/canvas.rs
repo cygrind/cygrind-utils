@@ -121,7 +121,7 @@ impl Canvas {
     }
 
     #[inline]
-    pub fn fill_text<'a>(&mut self, text: &str, pos: (f32, f32)) {
+    pub fn fill_text(&mut self, text: &str, pos: (f32, f32)) {
         let paint = self.paint.clone();
         let blob = TextBlob::new(
             text,

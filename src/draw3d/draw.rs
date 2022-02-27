@@ -1,4 +1,4 @@
-use crate::{parser::{Pattern, self}, draw2d::draw::Draw2d};
+use crate::parser::Pattern;
 use winit::{
     event::*,
     event_loop::{ControlFlow, EventLoop},
@@ -8,10 +8,7 @@ use winit::{
 pub struct Draw3d;
 
 impl Draw3d {
-    pub fn draw(pattern: Pattern) -> ! {
-        let src = include_str!("../../example.cgp");
-        let data = Draw2d::draw(parser::parse(src));
-
+    pub fn draw(_: Pattern) -> ! {
         let event_loop = EventLoop::new();
         let window = WindowBuilder::new().build(&event_loop).unwrap();
 
