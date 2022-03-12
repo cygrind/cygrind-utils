@@ -12,7 +12,7 @@ crate-type = ["cdylib", "rlib"]
 draw2d = []
 draw3d = []
 full = ["draw2d", "draw3d"]
-default = ["draw2d", "draw3d"]
+default = []
 
 [dependencies]
 skia-safe = { version = "0.47.0", features = ["gl"] }
