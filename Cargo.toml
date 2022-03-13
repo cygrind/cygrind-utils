@@ -15,7 +15,7 @@ full = ["draw2d", "draw3d"]
 default = []
 
 [dependencies]
-wgpu = { git = "https://github.com/gfx-rs/wgpu.git" }
+wgpu = { git = "https://github.com/gfx-rs/wgpu.git", features = ["webgl"] }
 logos = "0.12.0"
 flo_curves = "0.6.0"
 winit = "0.26.1"
