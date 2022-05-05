@@ -1,3 +1,5 @@
+use std::{error::Error, fmt::Display};
+
 use logos::Logos;
 
 /// Representation of the prefabs available on the official editor
@@ -97,7 +99,7 @@ impl Pattern {
 }
 
 /// Tries to parse a string to a Pattern
-pub fn parse(source: impl AsRef<str>) -> Pattern {
+pub fn parse(source: impl AsRef<str>) -> Result<Pattern, Box<dyn Error>> {
     let source = source.as_ref();
     let lines = source.lines();
     let mut token_grid = Vec::new();
@@ -125,16 +127,14 @@ pub fn parse(source: impl AsRef<str>) -> Pattern {
                 Tokens::Number(n) => n,
                 Tokens::Prefab(n) if n == Prefabs::None => 0,
                 _ => {
-                    println!("Oh no an error");
-                    std::process::exit(1);
+                    return Err(Box::new(ParseError("Invalid token when parsing numbers".to_string())))
                 }
             };
             let prefab = match r[i][j] {
                 Tokens::Prefab(n) => n,
                 Tokens::Number(_) => Prefabs::None,
                 Tokens::Error => {
-                    println!("Oh no an error");
-                    std::process::exit(1);
+                    return Err(Box::new(ParseError("Invalid token when parsing prefabs".to_string())))
                 }
             };
 
@@ -143,8 +143,19 @@ pub fn parse(source: impl AsRef<str>) -> Pattern {
         pattern.0.push(buff)
     }
 
-    pattern
+    Ok(pattern)
 }
+
+#[derive(Debug, Clone)]
+pub struct ParseError(pub String);
+
+impl Display for ParseError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
+impl Error for ParseError {}
 
 #[derive(Logos, Clone, Copy, Debug, PartialEq, PartialOrd)]
 #[doc(hidden)]
@@ -191,11 +202,12 @@ mod test {
     #[test]
     fn serde() {
         let src = include_str!("../example.cgp");
-        let out = parse(src).to_pattern_string();
+        let out = parse(src).unwrap().to_pattern_string();
 
         assert_eq!(src, &*out);
     }
 
+    #[cfg(feature = "draw2d")]
     #[test]
     fn parser_draw2d() {
         use crate::draw2d::draw::Draw2d;
