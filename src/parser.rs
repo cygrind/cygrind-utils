@@ -1,5 +1,6 @@
 use logos::Logos;
 
+/// Representation of the prefabs available on the official editor
 #[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
 pub enum Prefabs {
     None,
@@ -10,7 +11,14 @@ pub enum Prefabs {
     HiM,
 }
 
+impl Default for Prefabs {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
 impl Prefabs {
+    /// Returns the text representation of a prefab as seen on the official editor
     pub fn short_name<'a>(&self) -> &'a str {
         match self {
             Prefabs::None => "0",
@@ -23,29 +31,36 @@ impl Prefabs {
     }
 }
 
-#[derive(Debug)]
+/// Representation of an individual square on a cyber grind pattern
+#[derive(Debug, Default, Clone, Copy)]
 pub struct Cell {
     height: i32,
     prefab: Prefabs,
 }
 
 impl Cell {
+    /// Gets the height of this cell
     pub fn height(&self) -> i32 {
         self.height
     }
 
+    /// Gets the prefab of this cell
     pub fn prefab(&self) -> Prefabs {
         self.prefab
     }
 
+    /// Checks if the cell's prefab is a `Prefabs::None` (`0`)
     pub fn is_none(&self) -> bool {
         self.prefab == Prefabs::None
     }
 }
 
+/// Representation of a cgp
+#[derive(Debug)]
 pub struct Pattern(pub Vec<Vec<Cell>>);
 
 impl Pattern {
+    /// Turns this struct back into a cgp
     pub fn to_pattern_string(&self) -> String {
         let pattern = &self.0;
 
@@ -56,7 +71,7 @@ impl Pattern {
             for j in 0..16 {
                 let cell = &pattern[i][j];
 
-                let height_str = if cell.height >= 10 {
+                let height_str = if cell.height >= 10 || cell.height.is_negative() {
                     format!("({})", cell.height)
                 } else {
                     cell.height.to_string()
@@ -81,6 +96,7 @@ impl Pattern {
     }
 }
 
+/// Tries to parse a string to a Pattern
 pub fn parse(source: impl AsRef<str>) -> Pattern {
     let source = source.as_ref();
     let lines = source.lines();
@@ -131,8 +147,9 @@ pub fn parse(source: impl AsRef<str>) -> Pattern {
 }
 
 #[derive(Logos, Clone, Copy, Debug, PartialEq, PartialOrd)]
+#[doc(hidden)]
 pub enum Tokens {
-    #[regex(r"\d|\(\d+\)", |lexer| {
+    #[regex(r"\d|\(-?\d+\)", |lexer| {
         let slice = lexer.slice();
 
         if slice.starts_with('(') {
@@ -189,14 +206,6 @@ mod test {
         let bytes = &*data;
         let mut file = File::create("example.png").unwrap();
         file.write_all(bytes).unwrap();
-    }
-
-    #[test]
-    fn parser_draw3d() {
-        // use crate::draw3d::draw::Draw3d;
-
-        // let src = include_str!("../example.cgp");
-        // let data = Draw3d::draw(parser::parse(src));
     }
 }
 // cargo test --package cygrind-utils --lib -- parser::test::parser_draw2d --exact --nocapture

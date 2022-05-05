@@ -9,17 +9,16 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [features]
-draw2d = []
-draw3d = []
-full = ["draw2d", "draw3d"]
-default = ["draw2d", "draw3d"]
+draw2d = ["dep:skia-safe"]
+full = ["draw2d"]
+default = []
 
 [dependencies]
-skia-safe = { version = "0.47.0", features = ["gl"] }
-wgpu = { git = "https://github.com/gfx-rs/wgpu.git", features = ["emscripten"] }
 logos = "0.12.0"
 flo_curves = "0.6.0"
-winit = "0.26.1"
+skia-safe = { version = "0.47.0", features = ["gl"], optional = true }
+
+[dev-dependencies]
 criterion = "0.3.5"
 
 [[bench]]
