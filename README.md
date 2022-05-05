@@ -29,11 +29,9 @@ fn main() {
 
 Times:
 
-- Parsing: `200 micros`
+- Parsing: `11 micros`
 
-- Drawing: `11ms`
-
-- File-ing: `Idk it takes a while IO is really slow (150ms)`
+- Drawing: `150ms`
 
 ## Example
 
