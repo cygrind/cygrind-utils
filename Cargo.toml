@@ -21,9 +21,6 @@ skia-safe = { version = "0.47.0", features = ["gl"], optional = true }
 [dev-dependencies]
 criterion = "0.3.5"
 
-[target.wasm32-unknown-emscripten.dependencies]
-skia-safe = { version = "0.47.0", features = ["gl"] }
-
 [[bench]]
 name = "parse"
 harness = false

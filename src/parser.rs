@@ -213,7 +213,7 @@ mod test {
         use crate::draw2d::draw::Draw2d;
 
         let src = include_str!("../example.cgp");
-        let data = Draw2d::draw(parse(src));
+        let data = Draw2d::draw(parse(src).unwrap());
 
         let bytes = &*data;
         let mut file = File::create("example.png").unwrap();
