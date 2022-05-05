@@ -146,6 +146,7 @@ pub fn parse(source: impl AsRef<str>) -> Result<Pattern, Box<dyn Error>> {
     Ok(pattern)
 }
 
+/// Generic error type for parsing failures
 #[derive(Debug, Clone)]
 pub struct ParseError(pub String);
 
