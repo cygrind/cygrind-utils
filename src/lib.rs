@@ -15,3 +15,13 @@ pub mod parser;
 
 /// Utilities for drawing patterns (extracting a colour from height information)
 pub mod util;
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_validate() {
+        validate(include_str! ("../example.cgp")).unwrap();
+    }
+}
