@@ -99,7 +99,7 @@ impl Pattern {
 }
 
 /// Tries to parse a string to a Pattern
-pub fn parse(source: impl AsRef<str>) -> Result<Pattern, Box<dyn Error>> {
+pub fn parse(source: impl AsRef<str>) -> Result<Pattern, ParseError> {
     let source = source.as_ref();
     let lines = source.lines();
     let mut token_grid = Vec::new();
@@ -127,14 +127,14 @@ pub fn parse(source: impl AsRef<str>) -> Result<Pattern, Box<dyn Error>> {
                 Tokens::Number(n) => n,
                 Tokens::Prefab(n) if n == Prefabs::None => 0,
                 _ => {
-                    return Err(Box::new(ParseError("Invalid token when parsing numbers".to_string())))
+                    return Err(ParseError("Invalid token when parsing numbers".to_string()))
                 }
             };
             let prefab = match r[i][j] {
                 Tokens::Prefab(n) => n,
                 Tokens::Number(_) => Prefabs::None,
                 Tokens::Error => {
-                    return Err(Box::new(ParseError("Invalid token when parsing prefabs".to_string())))
+                    return Err(ParseError("Invalid token when parsing prefabs".to_string()))
                 }
             };
 
