@@ -118,7 +118,7 @@ pub fn parse(source: impl AsRef<str>) -> Result<Pattern, ParseError> {
         .filter(|p| !p.is_empty())
         .collect::<Vec<_>>();
 
-    if filtered_tokens.len() < 33 {
+    if filtered_tokens.len() < 32 {
         return Err(ParseError("Input is not long enough to be a valid pattern.".into()));
     }
 
