@@ -29,9 +29,9 @@ fn main() {
 
 Times:
 
-- Parsing: `11 micros`
+- Parsing: `5.8 micros`
 
-- Drawing: `150ms`
+- Drawing: `100ms`
 
 ## Example
 
