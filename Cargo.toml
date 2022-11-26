@@ -2,6 +2,10 @@
 name = "cygrind-utils"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+repository = "https://github.com/cygrind/cygrind-utils"
+documentation = "https://docs.rs/cygrind-utils/latest"
+description = "A utility crate for handling, parsing, and drawing cybergrind patterns from ULTRAKILL"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
