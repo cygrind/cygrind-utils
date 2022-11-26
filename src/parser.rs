@@ -1,5 +1,8 @@
-use std::{error::Error, fmt::Display};
-
+use std::{error::Error, fmt::Display, hint::unreachable_unchecked};
+use rand::{
+    distributions::{Distribution, Standard},
+    Rng,
+};
 use logos::Logos;
 
 /// Representation of the prefabs available on the official editor
@@ -11,6 +14,20 @@ pub enum Prefabs {
     JumpPad,
     Stairs,
     HiM,
+}
+
+impl Distribution<Prefabs> for Standard {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Prefabs {
+        match rng.gen_range(0..=5) {
+            0 => Prefabs::None,
+            1 => Prefabs::Melee,
+            2 => Prefabs::Projectile,
+            3 => Prefabs::JumpPad,
+            4 => Prefabs::Stairs,
+            5 => Prefabs::HiM,
+            _ => unsafe { unreachable_unchecked() }
+        }
+    }
 }
 
 impl Default for Prefabs {
@@ -41,6 +58,10 @@ pub struct Cell {
 }
 
 impl Cell {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
     /// Gets the height of this cell
     pub fn height(&self) -> i32 {
         self.height
@@ -54,6 +75,14 @@ impl Cell {
     /// Checks if the cell's prefab is a `Prefabs::None` (`0`)
     pub fn is_none(&self) -> bool {
         self.prefab == Prefabs::None
+    }
+
+    pub fn set_height(&mut self, height: i32) {
+        self.height = height
+    }
+
+    pub fn set_prefab(&mut self, prefab: Prefabs) {
+        self.prefab = prefab
     }
 }
 
