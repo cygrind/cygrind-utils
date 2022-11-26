@@ -1,7 +1,7 @@
 use flo_curves::{bezier, BezierCurveFactory, Coord2, Geo, Line};
 use rand::Rng;
 
-use crate::parser::{Pattern, Cell};
+use crate::parser::Pattern;
 
 /// Ported method for extracting colour information from height from [the official editor](https://gitlab.com/PITR_DEV/ultrakill.pattern-editor/-/blob/master/src/helpers/ColorHelper.js#L5)
 pub fn evaluate_height(height: i32) -> f64 {
@@ -19,7 +19,7 @@ pub fn evaluate_height(height: i32) -> f64 {
 /// Generate a pattern with random heights in the range -10..=20, and random prefabs for each cell
 pub fn random_pattern() -> Pattern {
     let mut rng = rand::thread_rng();
-    let mut pattern = Pattern(vec![vec![Cell::new(); 16]; 16]);
+    let mut pattern = Pattern::new();
 
     for row in pattern.0.iter_mut() {
         for cell in row {

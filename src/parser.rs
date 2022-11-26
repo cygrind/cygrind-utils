@@ -87,10 +87,14 @@ impl Cell {
 }
 
 /// Representation of a cgp
-#[derive(Debug)]
-pub struct Pattern(pub Vec<Vec<Cell>>);
+#[derive(Debug, Default)]
+pub struct Pattern(pub [[Cell; 16]; 16]);
 
 impl Pattern {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
     /// Turns this struct back into a cgp
     pub fn to_pattern_string(&self) -> String {
         let pattern = &self.0;
@@ -132,7 +136,7 @@ pub fn parse(source: impl AsRef<str>) -> Result<Pattern, ParseError> {
     let source = source.as_ref();
     let lines = source.lines();
     let mut token_grid = Vec::new();
-    let mut pattern = Pattern(Vec::new());
+    let mut pattern = Pattern::default();
 
     for line in lines {
         let mut linebuf = Vec::new();
@@ -154,7 +158,6 @@ pub fn parse(source: impl AsRef<str>) -> Result<Pattern, ParseError> {
     let (l, r) = filtered_tokens.split_at(16);
 
     for i in 0..16 {
-        let mut buff = Vec::with_capacity(16);
         for j in 0..16 {
             let height = match l[i][j] {
                 Tokens::Number(n) => n,
@@ -163,6 +166,12 @@ pub fn parse(source: impl AsRef<str>) -> Result<Pattern, ParseError> {
                     return Err(ParseError("Invalid token when parsing numbers".to_string()))
                 }
             };
+
+            // Limit the height to be within this range, in accordance to the source code of the editor <https://gitlab.com/PITR_DEV/ultrakill.pattern-editor/-/blob/master/src/components/Editor/MapView.jsx#L108>
+            if height >= 50 || height < -50 {
+                return Err(ParseError(format!("Invalid height: Height {height} is not in the range -50..=50.")))
+            }
+
             let prefab = match r[i][j] {
                 Tokens::Prefab(n) => n,
                 Tokens::Number(_) => Prefabs::None,
@@ -171,9 +180,8 @@ pub fn parse(source: impl AsRef<str>) -> Result<Pattern, ParseError> {
                 }
             };
 
-            buff.push(Cell { height, prefab });
+            pattern.0[i][j] = Cell { height, prefab };
         }
-        pattern.0.push(buff)
     }
 
     Ok(pattern)

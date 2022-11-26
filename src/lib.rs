@@ -18,10 +18,12 @@ pub mod util;
 
 #[cfg(test)]
 mod test {
+    use crate::parser::parse;
+
     use super::*;
 
     #[test]
     fn test_validate() {
-        validate(include_str! ("../example.cgp")).unwrap();
+        dbg!(parse(include_str! ("../example.cgp")).unwrap().to_pattern_string());
     }
 }
