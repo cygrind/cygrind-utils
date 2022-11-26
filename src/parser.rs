@@ -167,11 +167,6 @@ pub fn parse(source: impl AsRef<str>) -> Result<Pattern, ParseError> {
                 }
             };
 
-            // Limit the height to be within this range, in accordance to the source code of the editor <https://gitlab.com/PITR_DEV/ultrakill.pattern-editor/-/blob/master/src/components/Editor/MapView.jsx#L108>
-            if height >= 50 || height < -50 {
-                return Err(ParseError(format!("Invalid height: Height {height} is not in the range -50..=50.")))
-            }
-
             let prefab = match r[i][j] {
                 Tokens::Prefab(n) => n,
                 Tokens::Number(_) => Prefabs::None,
